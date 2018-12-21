@@ -5,7 +5,6 @@
  * See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
  */
 
-import * as ConfigStore from 'configstore';
 import {createHash} from 'crypto';
 import {GoogleAuth, GoogleAuthOptions} from 'google-auth-library';
 import * as Pumpify from 'pumpify';
@@ -147,7 +146,7 @@ export class Upload extends Pumpify {
   uri?: string;
   userProject?: string;
   encryption?: Encryption;
-  configStore: ConfigStore;
+  configStore: { get: (key: string) => any, set: (key: string, value: any) => void, delete: (key: string) => void };
   uriProvidedManually: boolean;
   numBytesWritten = 0;
   numRetries = 0;
@@ -196,7 +195,7 @@ export class Upload extends Pumpify {
     if (cfg.private) this.predefinedAcl = 'private';
     if (cfg.public) this.predefinedAcl = 'publicRead';
 
-    this.configStore = new ConfigStore('gcs-resumable-upload');
+    this.configStore = { get: (key) => {}, set: (key, value) => {}, delete: (key) => {} };
     this.uriProvidedManually = !!cfg.uri;
     this.uri = cfg.uri || this.get('uri');
     this.numBytesWritten = 0;
